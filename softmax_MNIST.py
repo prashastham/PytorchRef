@@ -54,7 +54,7 @@ print('b: ',list(model.parameters())[1].size())
 # Plot parameters
 plot_parameters(model=model)
 
-n_epochs = 10
+n_epochs = 15
 accuracy_list = []
 loss_list = []
 n_test = len(validation_dataset)
@@ -63,19 +63,19 @@ n_test = len(validation_dataset)
 def train_model(epochs):
     for epoch in range(epochs):
         for x, y in train_loader:
+            optimizer.zero_grad()
             z = model(x.view(-1, 28*28))
             loss = criterion(z, y)
-            optimizer.zero_grad()
             loss.backward()
             optimizer.step()
 
         correct_count = 0
         for x_val, y_val in validation_loader:
             z_val = model(x_val.view(-1, 28*28))
-            _, yhat = torch.max(z_val, dim=1)
+            _, yhat = torch.max(z_val.data, dim=1)
             correct_count += (yhat == y_val).sum().item()
         accuracy = correct_count/n_test
-        loss_list.append(loss.item())
+        loss_list.append(loss.data)
         accuracy_list.append(accuracy)
 
 train_model(n_epochs)
