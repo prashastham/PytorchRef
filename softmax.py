@@ -13,7 +13,7 @@ class DataSet(Dataset):
         self.y[(self.x > -1.0)[:, 0] * (self.x < 1.0)[:, 0]] = 1
         self.y[(self.x >= 1.0)[:, 0]] = 2
 
-        # Important: 
+        # Important, or will throw: "expected scalar type Long but found Float" error
         self.y = self.y.type(torch.LongTensor)
         
         self.len = self.x.shape[0]
