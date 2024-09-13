@@ -23,6 +23,7 @@ def plot_decision_regions_2class(model,data_set):
     plt.plot(X[y[:, 0] == 1, 0], X[y[:, 0] == 1, 1], 'ro', label='y=1')
     plt.title("decision region")
     plt.legend()
+    plt.show()
 
 # Define dataset
 class DataSet(Dataset):
@@ -31,18 +32,18 @@ class DataSet(Dataset):
         self.x = torch.zeros(N_s, 2)
         self.y = torch.zeros(N_s, 1)
         for i in range(N_s//4):
-            self.x[i, :] = torch.Tensor([[1.0], [1.0]])
-            self.y[i, :] = torch.Tensor([[0.0]])
+            self.x[i, :] = torch.Tensor([1.0, 1.0])
+            self.y[i, :] = torch.Tensor([0.0])
 
-            self.x[i + N_s//4, :] = torch.Tensor([[1.0], [-1.0]])
-            self.y[i + N_s//4, :] = torch.Tensor([[1.0]])
+            self.x[i + N_s//4, :] = torch.Tensor([1.0, -1.0])
+            self.y[i + N_s//4, :] = torch.Tensor([1.0])
 
-            self.x[i + N_s//2, :] = torch.Tensor([[-1.0], [-1.0]])
-            self.y[i + N_s//2, :] = torch.Tensor([[0.0]])
+            self.x[i + N_s//2, :] = torch.Tensor([-1.0, -1.0])
+            self.y[i + N_s//2, :] = torch.Tensor([0.0])
 
-            self.x[i + 3*N_s//4, :] = torch.Tensor([[-1.0], [1.0]])
-            self.y[i + 3*N_s//4, :] = torch.Tensor([[1.0]])
-            self.x = self.x + 0.1 * torch.randn((N_s, 2))
+            self.x[i + 3*N_s//4, :] = torch.Tensor([-1.0, 1.0])
+            self.y[i + 3*N_s//4, :] = torch.Tensor([1.0])
+            self.x = self.x + 0.05 * torch.randn((N_s, 2))
         self.len = self.x.shape[0]
 
     # Getter
@@ -65,11 +66,11 @@ class Net(nn.Module):
         self.linear1 = nn.Linear(input_dim, hidden)
         self.linear2 = nn.Linear(hidden, output_dim)
 
-        # Prediction
-        def forward(self, x):
-            x = torch.sigmoid(self.linear1(x))
-            x = torch.sigmoid(self.linear2(x))
-            return x
+    # Prediction
+    def forward(self, x):
+        x = torch.sigmoid(self.linear1(x))
+        x = torch.sigmoid(self.linear2(x))
+        return x
         
 # Define criterion function
 criterion = nn.BCELoss()
@@ -84,31 +85,33 @@ def train_model(data_set, model, train_loader, criterion, optimizer, epochs=1000
     ACC = []
 
     for epoch in range(epochs):
-        loss = 0
+        total = 0
         for x, y in train_loader:
             optimizer.zero_grad()
             yhat = model(x)
             loss = criterion(yhat, y)
             loss.backward()
             optimizer.step()
-            loss += loss.item()
-
-        LOSS.append(loss)
-        ACC.append(accuracy(data_set, model))
+            total += loss.item()
+        acc = accuracy(data_set, model)
+        print(f"Epoch: {epoch}/{epochs} ---> Loss: {np.round(total, 4)}, Accuracy: {acc}")
+        LOSS.append(total)
+        ACC.append(acc)
 
     fig, ax1 = plt.subplots()
     color = 'tab:red'
-    ax1.plot(LOSS, color=color)
+    ax1.plot(LOSS, color=color, label="total loss")
     ax1.set_xlabel('epoch', color=color)
     ax1.set_ylabel('total loss', color=color)
     ax1.tick_params(axis='y', color=color)
-
-    ax2 = ax1.twinx()
+    
+    ax2 = ax1.twinx()  
     color = 'tab:blue'
-    ax2.plot(ACC, color=color)
-    ax2.set_ylabel('accuracy', color=color)
+    ax2.set_ylabel('accuracy', color=color)  # we already handled the x-label with ax1
+    ax2.plot(ACC, color=color, label="accuracy")
     ax2.tick_params(axis='y', color=color)
-    fig.tight_layout()
+    fig.tight_layout()  # otherwise the right y-label is slightly clipped
+
     plt.show()
 
     return LOSS
@@ -116,6 +119,23 @@ def train_model(data_set, model, train_loader, criterion, optimizer, epochs=1000
 # Triain model --> single hidden neuron
 model = Net(2, 1, 1)
 optimizer = optim.SGD(model.parameters(), lr=0.01)
+print(model.state_dict)
+cost = train_model(data_set, model, train_loader, criterion, optimizer)
+# Plot decision boundary
+plot_decision_regions_2class(model, data_set)
+
+# Triain model --> 2 hidden neuron
+model = Net(2, 2, 1)
+optimizer = optim.SGD(model.parameters(), lr=0.01)
+print(model.state_dict)
+cost = train_model(data_set, model, train_loader, criterion, optimizer)
+# Plot decision boundary
+plot_decision_regions_2class(model, data_set)
+
+# Triain model --> 3 hidden neuron
+model = Net(2, 3, 1)
+optimizer = optim.SGD(model.parameters(), lr=0.01)
+print(model.state_dict)
 cost = train_model(data_set, model, train_loader, criterion, optimizer)
 # Plot decision boundary
 plot_decision_regions_2class(model, data_set)
