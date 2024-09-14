@@ -139,3 +139,11 @@ print(model.state_dict)
 cost = train_model(data_set, model, train_loader, criterion, optimizer)
 # Plot decision boundary
 plot_decision_regions_2class(model, data_set)
+
+# Triain model --> 4 hidden neuron
+model = Net(2, 4, 1)
+optimizer = optim.SGD(model.parameters(), lr=0.01)
+print(model.state_dict)
+cost = train_model(data_set, model, train_loader, criterion, optimizer)
+# Plot decision boundary
+plot_decision_regions_2class(model, data_set)
