@@ -64,6 +64,7 @@ def train_model(epochs):
     for epoch in range(epochs):
         for x, y in train_loader:
             optimizer.zero_grad()
+            # Flatten X --> from [100, 1, 28, 28] to [100, 784]
             z = model(x.view(-1, 28*28))
             loss = criterion(z, y)
             loss.backward()
