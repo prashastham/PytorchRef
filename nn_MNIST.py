@@ -8,10 +8,10 @@ import matplotlib.pyplot as plt
 def plot_training_info(training_info):
     plt.subplot(2, 1, 1)
     plt.plot(training_info['training_loss'], 'r')
-    plt.ylabel('Loss')
+    plt.ylabel('Training Loss')
     plt.subplot(2, 1, 2)
     plt.plot(training_info['validation_accuracy'], 'b')
-    plt.ylabel('Accuracy')
+    plt.ylabel('Validation Accuracy')
     plt.xlabel('Epochs')
     plt.show()
 
