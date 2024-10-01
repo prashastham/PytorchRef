@@ -60,9 +60,9 @@ class NNet(nn.Module):
         self.linear2 = nn.Linear(h_dim, output_dim)
 
     def forward(self, x):
-        h_out = torch.sigmoid(self.linear1(x))
-        yhat = self.linear2(h_out)
-        return yhat
+        x = torch.sigmoid(self.linear1(x))  
+        x = self.linear2(x)
+        return x
 
 # Define criterion function
 criterion = nn.CrossEntropyLoss()
