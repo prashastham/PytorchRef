@@ -69,7 +69,7 @@ criterion = nn.CrossEntropyLoss()
 
 # Define model parameters
 input_dim = 28*28
-h_dim = 100
+h_dim = 50
 ouput_dim = 10
 
 # Define model and optimiizer
@@ -97,15 +97,13 @@ def train_model(model, criterion, train_loader, validation_loader, optimizer, ep
 
     return training_info
 
-training_info = train_model(model, criterion, train_loader, validation_loader, optimizer, epochs=30)
+training_info = train_model(model, criterion, train_loader, validation_loader, optimizer, epochs=200 )
 
 # Plot trainging info
 plot_training_info(training_info)
 
 # print model parameters
 print_model_parameters(model)
-
-# Plot the first five misclassified samples
 
 # Plot the misclassified samples
 Softmax_fn=nn.Softmax(dim=-1)
