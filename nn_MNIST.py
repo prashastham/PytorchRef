@@ -60,7 +60,8 @@ class NNet(nn.Module):
         self.linear2 = nn.Linear(h_dim, output_dim)
 
     def forward(self, x):
-        x = torch.sigmoid(self.linear1(x))  
+        # Try different activation functions, tanh worked best for this problem
+        x = torch.tanh(self.linear1(x))  
         x = self.linear2(x)
         return x
 
@@ -97,7 +98,7 @@ def train_model(model, criterion, train_loader, validation_loader, optimizer, ep
 
     return training_info
 
-training_info = train_model(model, criterion, train_loader, validation_loader, optimizer, epochs=200 )
+training_info = train_model(model, criterion, train_loader, validation_loader, optimizer, epochs=30)
 
 # Plot trainging info
 plot_training_info(training_info)
