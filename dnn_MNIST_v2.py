@@ -5,6 +5,14 @@ from torchvision import datasets
 from torchvision.transforms import ToTensor
 import matplotlib.pyplot as plt
 
+# Define a function to display data
+def show_data(data_sample):
+    plt.imshow(data_sample[0].numpy().reshape(28, 28), cmap='gray')
+    plt.title(f"y = {data_sample[1]}")
+    plt.show()
+
+torch.manual_seed(1)
+
 # Dataset
 training_dataset = datasets.MNIST(
     root="data",
@@ -85,3 +93,17 @@ plt.plot(training_info['validation_accuracy'], 'b')
 plt.ylabel('Validation Accuracy')
 plt.xlabel('Iterations')
 plt.show()
+
+# Print misclassified samples
+Softmax_fn=nn.Softmax(dim=-1)
+count = 0
+for x, y in validation_dataset:
+    z = model(x.reshape(-1, 28 * 28))
+    _, yhat = torch.max(z, 1)
+    if yhat != y:
+        show_data((x, y))
+        print("yhat:", yhat)
+        print("probability of class ", torch.max(Softmax_fn(z)).item())
+        count += 1
+        if count >= 5:
+            break
