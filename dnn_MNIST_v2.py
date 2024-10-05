@@ -74,7 +74,7 @@ def train_model(model, criterion, train_loader, validation_loader, optimizer, ep
     return training_info
 
 # Define model parameters
-layers = [28*28, 128, 64, 10]
+layers = [28*28, 64, 32, 10]
 
 # Instantiate model, loss function and optimizer
 model = NNet(layers)
@@ -82,7 +82,7 @@ criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(model.parameters(), lr=0.01)
 
 # Train model
-training_info = train_model(model, criterion, train_loader, validation_loader, optimizer, epochs=20)
+training_info = train_model(model, criterion, train_loader, validation_loader, optimizer, epochs=50)
 
 # Plot training info
 plt.subplot(2, 1, 1)
