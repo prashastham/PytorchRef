@@ -129,3 +129,11 @@ plt.xlabel('iterations')
 plt.show()
 # Plot decision regions
 plot_decision_regions_3class(model, data_set)
+# Print out final accuracy
+print("Final training accuracy:", training_info['accuracy'][-1])
+# Test data
+test_data = Spiral2D(K=3, N=2000)
+# Test predictions
+predictions = model(test_data.x)
+_, yhat = torch.max(predictions, dim=1)
+print("Test accuracy:", 100 * (yhat == test_data.y).numpy().mean())
